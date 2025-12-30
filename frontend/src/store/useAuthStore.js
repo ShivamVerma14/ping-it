@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { axiosInstance } from "../lib/axios.js";
 import toast from "react-hot-toast";
 import { io } from "socket.io-client";
+import { useChatStore } from "./useChatStore.js";
 
 const BASE_URL =
   import.meta.env.MODE === "development" ? "http://localhost:3000" : "/";
@@ -89,6 +90,27 @@ export const useAuthStore = create((set, get) => ({
     // Listen for online users event
     socket.on("getOnlineUsers", (userIds) => {
       set({ onlineUsers: userIds });
+    });
+
+    // Listen for new messages
+    socket.on("newMessage", (newMessage) => {
+      const { selectedUser, messages } = useChatStore.getState();
+      if (
+        selectedUser &&
+        (newMessage.senderId === selectedUser._id.toString() ||
+          newMessage.receiverId === selectedUser._id.toString())
+      ) {
+        useChatStore.setState({ messages: [...messages, newMessage] });
+        // Play sound if enabled
+        const { isSoundEnabled } = useChatStore.getState();
+        if (isSoundEnabled) {
+          const notificationSound = new Audio("/sounds/notification.mp3");
+          notificationSound.currentTime = 0;
+          notificationSound
+            .play()
+            .catch((error) => console.log("Audio play failed:", error));
+        }
+      }
     });
   },
 

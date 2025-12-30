@@ -79,9 +79,11 @@ export const useChatStore = create((set, get) => ({
         `/messages/send/${selectedUser._id}`,
         messageData
       );
-      set({ messages: messages.concat(res.data) });
+      set({
+        messages: messages.filter((msg) => msg._id !== tempId).concat(res.data),
+      });
     } catch (error) {
-      set({ messages: messages });
+      set({ messages: messages.filter((msg) => msg._id !== tempId) });
       toast.error(error.response?.data?.message || "Something went wrong!");
     }
   },

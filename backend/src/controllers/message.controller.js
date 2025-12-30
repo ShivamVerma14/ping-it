@@ -1,6 +1,8 @@
 import cloudinary from "../lib/cloudinary.js";
+import { getReceiverSocketId } from "../lib/socket.js";
 import Message from "../models/Message.js";
 import User from "../models/User.js";
+import { io } from "../lib/socket.js";
 
 export const getAllContacts = async (req, res) => {
   try {
@@ -70,7 +72,12 @@ export const sendMessage = async (req, res) => {
 
     await newMessage.save();
 
-    // Todo: send message in real-time if user is online - socker.io
+    // Realtime messages using Socket
+    const receiverSocketId = getReceiverSocketId(receiverId);
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("newMessage", newMessage);
+    }
+
     res.status(201).json(newMessage);
   } catch (error) {
     console.error("Error in sendMessage controller:", error);
