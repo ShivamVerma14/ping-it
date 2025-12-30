@@ -1,17 +1,17 @@
 import { useEffect } from "react";
 import { useChatStore } from "../store/useChatStore";
-import UsersLoadingSkeleton from "../components/UsersLoadingSkeleton";
-import NoChatsFound from "../components/NoChatsFound";
+import UsersLoadingSkeleton from "./UsersLoadingSkeleton";
+import NoChatsFound from "./NoChatsFound";
 
 function ChatsList() {
-  const { getMyChatPartners, chats, isUserLoading, setSelectedUser } =
+  const { getMyChatPartners, chats, isMessagesLoading, setSelectedUser } =
     useChatStore();
 
   useEffect(() => {
     getMyChatPartners();
   }, [getMyChatPartners]);
 
-  if (isUserLoading) return <UsersLoadingSkeleton />;
+  if (isMessagesLoading) return <UsersLoadingSkeleton />;
   if (chats.length === 0) return <NoChatsFound />;
 
   return (

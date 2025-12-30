@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router";
 import { useAuthStore } from "../store/useAuthStore";
-import { LockIcon, MailIcon, MessageCircleIcon } from "lucide-react";
+import {
+  LoaderIcon,
+  LockIcon,
+  MailIcon,
+  MessageCircleIcon,
+} from "lucide-react";
 import BorderAnimatedContainer from "../components/BorderAnimatedContainer";
 
 function LoginPage() {
@@ -75,7 +80,7 @@ function LoginPage() {
                     {isLoggingIn ? (
                       <LoaderIcon className="w-full h-5 animate-spin text-center" />
                     ) : (
-                      "Create Account"
+                      "Login"
                     )}
                   </button>
                 </form>
